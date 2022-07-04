@@ -1,0 +1,74 @@
+; Side set pin map
+; WE OE CE
+;  4  2  1
+
+.program db_write
+.side_set 3 opt
+    pull         side 5 ; Pulls
+    out y, 32 ; Loads  
+.wrap_target
+    wait 1 irq 0 ; Waits for address interrupt
+    pull
+    out pins, 8  side 6 [1]; Loads data into pins as soon as possible
+    mov x, y     side 2 ; Write cycle starts
+delay_us:
+    jmp x--, delay_us
+    out null, 24 side 6 [1] ; Write cycle stops
+    nop          side 5
+;    pull side 5 ; Pulls
+;    out y, 32 ; Loads  
+;.wrap_target
+;    wait 1 irq 0 ; Waits for address interrupt
+;    pull
+;    out pins, 8  ; Loads data into pins as soon as possible
+;    mov x, y side 2 ; Write cycle starts
+;delay_us:
+;    jmp x--, delay_us
+;    out null, 24 side 5 ; Write cycle stops
+.wrap
+
+
+.program db_read
+.side_set 3 opt
+    pull     side 5 ; Read can be a static state.
+    out y, 32
+.wrap_target
+    wait 1 irq 0 ; Waits for address interrupt
+    mov x, y side 4; Moves stall cycles to x
+delay_us:
+    jmp x--, delay_us
+    in pins, 8 ; Reads pins
+    push     side 5; Pushes data to cpu
+.wrap
+
+; Original program that is not very accurate
+.program databus
+.side_set 3 opt
+write:
+    out pins, 8 ; WE High OE High CE Low 6
+    set x, 1 side 2 ; 50ns
+write_delay:
+    jmp x--, write_delay
+    nop       side 5
+    jmp main  
+
+; CE low, OE low and WE high to read
+read:
+    set x, 6 side 4
+read_delay:
+    jmp x--, read_delay
+    in pins, 8
+    push      side 5
+    jmp main
+    
+public entry_point:
+    nop side 5 ; Disables the EEPROM
+.wrap_target
+main:
+    wait 1 irq 0 ; waits and clears irq flag
+    pull
+    out x, 1
+    out pindirs, 8 ; Sets pin dirs
+    jmp !x, read
+    jmp write
+.wrap
