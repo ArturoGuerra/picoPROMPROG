@@ -28,45 +28,6 @@ int main() {
     printf("EEPROM Programmer\n");
 
 
-//    printf("Press enter to start transfer.\n");
-//    char c = getchar();
-//    while(c != '\r') {
-//        c = getchar();
-//        sleep_ms(100);
-//    }
-//
-//    printf("Reading..\n");
-//
-//    int size = 0;
-//    char buffer[XMODEM_BUFFER_SIZE];
-//    XMODEM_STATUS status = xmodem_receive(buffer, size);
-//
-//    c = getchar();
-//    while(c != '\r') {
-//        c = getchar();
-//        sleep_ms(100);
-//    }
-//
-//    if (status != OK) {
-//        printf("Error: %d\n", status);
-//        return -1;
-//    }
-//
-//    printf("Received %d bytes\n", size);
-//
-//    bool ok = true;
-//    for (int i = 0; size > i; i++) {
-//        if (buffer[i] != 0xEA) {
-//            printf("%d\n", buffer[i]);
-//            ok = false;
-//            break;
-//        }
-//    }
-//
-//
-//    printf("%s\n", ok ? "OK" : "FAIL");
-
-
     Console console;
 
     console.banner();
