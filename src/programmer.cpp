@@ -137,27 +137,36 @@ data_t Programmer::rbyte(address_t address) {
 
 //// TODO: Migrate over to DMA Channel for better throughput
 // Writes whole image or file to EEPROM starting at offset using fast write
-void Programmer::wimage(data_t data[], int size, int offset) {
+void Programmer::wimage(const data_t *data, int size) {
     set_mode(WRITE);
 
-    for (int address = offset; size > address; address++) {
+    for (int address = 0; size > address; address++) {
         // Sleeps at page boudaries to allow eeprom to write data from latches
         if (address % eeprom_info.page_size == 0) sleep_ms(eeprom_info.page_delay_ms);
         
         pio_sm_put_blocking(pio, addressbus_sm, address & eeprom_info.address_mask);
         pio_sm_put_blocking(pio, databus_sm, data[address] & eeprom_info.data_mask);
     }
+    
+    // Ensures that the last page is written to the EEPROMq
+    sleep_ms(eeprom_info.page_delay_ms);
 };
 
 //// TODO: Migrate over to DMA Channel for better throughput
 // Reads whole image from EEPROM starting at offset and returns it in data[]
-void Programmer::rimage(data_t *data, int size, int offset) {
+void Programmer::rimage(data_t *data, int &size) {
     set_mode(READ);
-    for (int address = offset; size > address; address++) {
+    size = eeprom_info.size;
+    for (int address = 0; size > address; address++) {
         pio_sm_put_blocking(pio, addressbus_sm, address & eeprom_info.address_mask);
         data[address] = (data_t)pio_sm_get_blocking(pio, databus_sm) & eeprom_info.data_mask;
     }
 };
+
+
+void Programmer::chip_erase() {};
+void Programmer::disable_data_protection() {};
+void Programmer::enable_data_protection() {};
 
 // Initializes addressbus pins and state machine
 static inline void addressbus_init(PIO pio, int sm, uint offset, int pin_base, int pin_count) {

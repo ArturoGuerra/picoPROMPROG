@@ -4,6 +4,11 @@
 #include <pico/stdlib.h>
 #include <hardware/pio.h>
 
+#include "config.h"
+
+// Maximum number of bytes any eeprom can have
+#define EEPROM_BUFFER_SIZE 0x10000
+
 typedef uint16_t address_t;
 typedef uint8_t data_t;
 
@@ -13,18 +18,6 @@ enum OP_MODE {
     OP_MODE_SIZE = 2,
 };
 
-struct eeprom_info_t {
-    const char* name;  // Name of the EEPROM
-    uint address_mask; // Address bus mask usually 15 bits so 0x7FFF
-    uint data_mask;    // Databus mask usually 8 bits so 0xFF
-    int size;          // EEPROM Size in bytes, usually 1 more than address mask
-    int page_size;     // EEPROM Size in bytes, usually 64 bytes
-    int page_delay_ms; // EEPROM Page Delay in milliseconds
-    int write_delay_ns; // Delay between states for write operations
-    int read_delay_ns; // Delay for data to be available for read operations
-    bool write_protect;
-    bool write_protect_disable;
-};
 
 
 class Programmer {
@@ -50,13 +43,17 @@ public:
     // Needs to stop all state machines and reset them
     ~Programmer();
 
+    const eeprom_info_t& get_eeprom_info() const {
+        return eeprom_info;
+    }
+
     // Byte operations
-    void wbyte(address_t address, data_t data);
-    data_t rbyte(address_t address);
+    void wbyte(const address_t address, const data_t data);
+    data_t rbyte(const address_t address);
 
     // Whole EEPROM Operations
-    void wimage(data_t data[], int size, int offset);
-    void rimage(data_t *data, int size, int offset);
+    void wimage(const data_t* data, int size);
+    void rimage(data_t* data, int &size);
     void chip_erase();
     void enable_data_protection();
     void disable_data_protection();
