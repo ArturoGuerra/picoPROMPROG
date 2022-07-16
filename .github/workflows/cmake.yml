@@ -21,8 +21,11 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+      
+    - name: Get Cmake
+      uses: lukka/get-cmake@latest
     
-    - name: Installs the ARM GCC Compiler
+    - name: Get ARM GCC Compiler
       uses: carlosperate/arm-none-eabi-gcc-action@v1
       id: arm-none-eabi-gcc-action
 
