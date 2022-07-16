@@ -25,7 +25,7 @@ const std::map<std::string, menu_option_t> menu_options_map = {
 };
 
 // Handles string input
-static inline const char* input_handler() {
+static inline char* input_handler() {
     char* data = new char[MAX_STRING_LENGTH];
     printf("> ");
     int c = getchar();
@@ -47,9 +47,9 @@ static inline const char* input_handler() {
 };
 
 std::string Console::gets() {
-    const char* cstr = input_handler();
+    char* cstr = input_handler();
     std::string str(cstr);
-    delete cstr;
+    delete[] cstr;
     return str;
 };
 
