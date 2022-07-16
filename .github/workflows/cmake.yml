@@ -27,6 +27,7 @@ jobs:
       with:
         repository: raspberrypi/pico-sdk
         path: pico-sdk
+        submodules: true
       
     - name: Get Cmake
       uses: lukka/get-cmake@latest
