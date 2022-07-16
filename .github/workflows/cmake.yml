@@ -41,6 +41,10 @@ jobs:
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk -DCMAKE_EXPORT_COMPILE_COMMANDS=${{env.EXPORT_COMPILE_COMMANDS}} -DCMAKE_C_COMPILER=${{ steps.arm-none-eabi-gcc-action.outputs.path }}/arm-none-eabi-gcc   -DCMAKE_CXX_COMPILER=${{ steps.arm-none-eabi-gcc-action.outputs.path }}/arm-none-eabi-g++ -G "Unix Makefiles" 
 
+    - name: Get core count
+      id: core_count
+      run : cat /proc/cpuinfo  | grep processor | wc -l
+
     - name: Build
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target all -j ${{steps.core_count.outputs.output}}
