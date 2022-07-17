@@ -29,9 +29,6 @@ jobs:
         path: pico-sdk
         submodules: true
 
-    - name: Get Cmake
-      uses: lukka/get-cmake@latest
-
     - name: Get ARM GCC Compiler
       uses: carlosperate/arm-none-eabi-gcc-action@v1
       id: arm-none-eabi-gcc-action
