@@ -21,29 +21,25 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      
+
     - name: Checkout pico-sdk
       uses: actions/checkout@v3
       with:
         repository: raspberrypi/pico-sdk
         path: pico-sdk
         submodules: true
-      
-#    - name: Get Cmake
-#      uses: lukka/get-cmake@latest
-#    
-#    - name: Get ARM GCC Compiler
-#      uses: carlosperate/arm-none-eabi-gcc-action@v1
-#      id: arm-none-eabi-gcc-action
 
-#    - name: Configure CMake
-#      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-#      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-#      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk -DCMAKE_EXPORT_COMPILE_COMMANDS=${{env.EXPORT_COMPILE_COMMANDS}} -DCMAKE_C_COMPILER=${{ steps.arm-none-eabi-gcc-action.outputs.path }}/arm-none-eabi-gcc   -DCMAKE_CXX_COMPILER=${{ steps.arm-none-eabi-gcc-action.outputs.path }}/arm-none-eabi-g++ -G "Unix Makefiles" 
+    - name: Get Cmake
+      uses: lukka/get-cmake@latest
+
+    - name: Get ARM GCC Compiler
+      uses: carlosperate/arm-none-eabi-gcc-action@v1
+      id: arm-none-eabi-gcc-action
+
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk -DCMAKE_EXPORT_COMPILE_COMMANDS=${{env.EXPORT_COMPILE_COMMANDS}} -DCMAKE_C_COMPILER=/usr/bin/arm-none-eabi-gcc   -DCMAKE_CXX_COMPILER=/usr/bin/arm-none-eabi-g++ -G "Unix Makefiles" 
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DPICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk -DCMAKE_EXPORT_COMPILE_COMMANDS=${{env.EXPORT_COMPILE_COMMANDS}} -DCMAKE_C_COMPILER=${{ steps.arm-none-eabi-gcc-action.outputs.path }}/arm-none-eabi-gcc   -DCMAKE_CXX_COMPILER=${{ steps.arm-none-eabi-gcc-action.outputs.path }}/arm-none-eabi-g++ -G "Unix Makefiles"
 
     - name: Get number of CPU cores
       uses: SimenB/github-actions-cpu-cores@v1
