@@ -27,7 +27,6 @@ int main() {
     
     printf("EEPROM Programmer\n");
 
-
     Console console;
 
     console.banner();
