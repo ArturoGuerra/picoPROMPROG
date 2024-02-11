@@ -34,5 +34,8 @@
 # Cmake
 build/*
 
+# Clangd
+.cache/*
+
 # VSCode
 .vscode/*
